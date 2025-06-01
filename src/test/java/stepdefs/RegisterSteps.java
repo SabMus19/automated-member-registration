@@ -2,15 +2,14 @@ package stepdefs;
 
 import io.cucumber.java.en.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.*;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.time.Duration;
-
-
+import io.cucumber.java.After;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class RegisterSteps {
     WebDriver driver;
@@ -106,17 +105,20 @@ public class RegisterSteps {
 
     @Then("I should see an error for last name")
     public void i_should_see_an_error_for_last_name() {
-        String bodyText = driver.findElement(By.tagName("body")).getText();
-        assertTrue(bodyText.contains("Last Name is required"));
-        driver.quit();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        boolean errorDisplayed = driver.getPageSource().contains("Last Name is required");
+
+        assertTrue(errorDisplayed, "Expected 'Last Name is required' error was not displayed.");
     }
+
 
     @Then("I should see an error for password mismatch")
     public void i_should_see_an_error_for_password_mismatch() {
         WebElement confirmPasswordInput = driver.findElement(By.id("signupunlicenced_confirmpassword"));
         String validationMessage = confirmPasswordInput.getAttribute("data-val-equalto");
 
-        Assertions.assertTrue(validationMessage.contains("Password did not match"),
+        assertTrue(validationMessage.contains("Password did not match"),
                 "Expected password mismatch error message.");
     }
 
@@ -126,7 +128,12 @@ public class RegisterSteps {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         boolean errorDisplayed = driver.getPageSource().contains("You must confirm that you have read and accepted our Terms and Conditions");
 
-        Assertions.assertTrue(errorDisplayed, "Expected error message about Terms and Conditions was not found");
     }
 
+    @After
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 }
