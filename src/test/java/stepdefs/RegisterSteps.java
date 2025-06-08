@@ -23,13 +23,16 @@ public class RegisterSteps {
 
     @When("I enter valid registration details")
     public void i_enter_valid_registration_details() {
+
         driver.findElement(By.id("dp")).sendKeys("02/02/1984");
         driver.findElement(By.id("member_firstname")).sendKeys("Saba");
         driver.findElement(By.id("member_lastname")).sendKeys("Mustafa");
-        driver.findElement(By.id("member_emailaddress")).sendKeys("sabamustafaali@yahoo.com");
-        driver.findElement(By.id("member_confirmemailaddress")).sendKeys("sabamustafaali@yahoo.com");
-        driver.findElement(By.id("signupunlicenced_password")).sendKeys("Test@1234");
-        driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys("Test@1234");
+
+        String randomEmail = "sabamustafaali" + System.currentTimeMillis() + "@testmail.com";
+        driver.findElement(By.id("member_emailaddress")).sendKeys(randomEmail);
+        driver.findElement(By.id("member_confirmemailaddress")).sendKeys(randomEmail);
+        driver.findElement(By.id("signupunlicenced_password")).sendKeys("Saba1234");
+        driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys("Saba1234");
 
     }
 
@@ -38,9 +41,9 @@ public class RegisterSteps {
         driver.findElement(By.id("dp")).sendKeys("02/02/1984");
         driver.findElement(By.id("member_firstname")).sendKeys("Saba");
         driver.findElement(By.id("member_lastname")).sendKeys("");
-        driver.findElement(By.id("member_confirmemailaddress")).sendKeys("sabamustafaali@yahoo.com");
-        driver.findElement(By.id("signupunlicenced_password")).sendKeys("Test@1234");
-        driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys("Test@1234");
+        driver.findElement(By.id("member_confirmemailaddress")).sendKeys("sabaalimustafa@yahoo.com");
+        driver.findElement(By.id("signupunlicenced_password")).sendKeys("Saba1234");
+        driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys("Saba1234");
     }
 
     @When("I enter registration details with mismatched passwords")
@@ -48,9 +51,9 @@ public class RegisterSteps {
         driver.findElement(By.id("dp")).sendKeys("02/02/1984");
         driver.findElement(By.id("member_firstname")).sendKeys("Saba");
         driver.findElement(By.id("member_lastname")).sendKeys("Mustafa");
-        driver.findElement(By.id("member_emailaddress")).sendKeys("sabamustafaali@yahoo.com");
-        driver.findElement(By.id("member_confirmemailaddress")).sendKeys("sabamustafaali@yahoo.com");
-        driver.findElement(By.id("signupunlicenced_password")).sendKeys("Test@1234");
+        driver.findElement(By.id("member_emailaddress")).sendKeys("sabaalimustafa@yahoo.com");
+        driver.findElement(By.id("member_confirmemailaddress")).sendKeys("sabaalimustafa@yahoo.com");
+        driver.findElement(By.id("signupunlicenced_password")).sendKeys("Saba1234");
         driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys("Wrong1234");
 
     }
@@ -93,20 +96,22 @@ public class RegisterSteps {
 
     @Then("I should see a confirmation message")
     public void i_should_see_a_confirmation_message() {
-        //registration page is not working that's why commenting this code.
-        // WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        // wait.until(ExpectedConditions.or(
-        //     ExpectedConditions.urlContains("Welcome"),
-        //     ExpectedConditions.presenceOfElementLocated(By.className("validation-summary-success"))
-        // ));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement heading = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("h2.bold.gray.text-center.margin-bottom-40")));
 
-        // Skip the check since submission doesn't work manually either
-        System.out.println(" Skipping confirmation check - site does not respond to submit.");
+        String actualText = heading.getText();
+        assertTrue(actualText.contains("THANK YOU FOR CREATING AN ACCOUNT"),
+                "Confirmation message was not displayed as expected.");
     }
+
+
+
+
 
     @Then("I should see an error for last name")
     public void i_should_see_an_error_for_last_name() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        //WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         boolean errorDisplayed = driver.getPageSource().contains("Last Name is required");
 
@@ -126,7 +131,7 @@ public class RegisterSteps {
 
     @Then("I should see an error about accepting terms")
     public void i_should_see_an_error_about_accepting_terms() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        //WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         boolean errorDisplayed = driver.getPageSource().contains("You must confirm that you have read and accepted" +
                 " our Terms and Conditions");
 
