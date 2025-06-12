@@ -28,6 +28,7 @@ public class RegisterSteps {
         driver.findElement(By.id("member_firstname")).sendKeys("Saba");
         driver.findElement(By.id("member_lastname")).sendKeys("Mustafa");
 
+        //add time stamp for each execution to avoid duplicate email
         String randomEmail = "sabamustafaali" + System.currentTimeMillis() + "@testmail.com";
         driver.findElement(By.id("member_emailaddress")).sendKeys(randomEmail);
         driver.findElement(By.id("member_confirmemailaddress")).sendKeys(randomEmail);
@@ -123,7 +124,7 @@ public class RegisterSteps {
     public void i_should_see_an_error_for_password_mismatch() {
         WebElement confirmPasswordInput = driver.findElement(By.id("signupunlicenced_confirmpassword"));
         String validationMessage = confirmPasswordInput.getAttribute("data-val-equalto");
-
+    //assertEqual
         assertTrue(validationMessage.contains("Password did not match"),
                 "Expected password mismatch error message.");
     }
